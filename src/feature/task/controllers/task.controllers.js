@@ -86,6 +86,9 @@ const updateTask = async(req, res = response) => {
     }
 };
 
+
+
+
 const deleteTask = async(req, res = response) => {
     const taskId = req.params.id;
     const uid = req.uid;
@@ -99,8 +102,8 @@ const deleteTask = async(req, res = response) => {
             });
         }
 
-        // Solo el creador puede borrar la tarea y no puede estar completada
-        if (task.creator.toString() !== uid.toString() || task.complete) {
+        // Verifica si el creador de la tarea está definido y si coincide con el uid
+        if (!task.creator || task.creator.toString() !== uid.toString() || task.complete) {
             return res.status(401).json({
                 ok: false,
                 message: 'No tiene privilegios para eliminar esta tarea o la tarea ya está completada'
@@ -122,7 +125,8 @@ const deleteTask = async(req, res = response) => {
     }
 };
 
-// Envía notificaciones por correo electrónico al asignar una tarea
+
+
 async function sendTaskAssignedNotification(userId, taskTitle) {
   
     const user = await UserModel.findById(userId);
@@ -143,6 +147,38 @@ async function sendTaskAssignedNotification(userId, taskTitle) {
     }
 }
 
+// En tu controlador de tareas (task.controllers.js)
+const getTaskDetail = async (req, res) => {
+    const taskId = req.params.id;
+
+    try {
+        const task = await TaskModel.findById(taskId)
+                                   .populate('creator', 'name email')
+                                   .populate('assignedTo', 'name email');
+
+        if (!task) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'Tarea no encontrada con ese ID'
+            });
+        }
+
+        res.json({
+            ok: true,
+            task
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Error al obtener detalle de la tarea'
+        });
+    }
+};
+
+
+
+
 
 
 
@@ -150,5 +186,6 @@ module.exports = {
     getTasks,
     deleteTask,
     updateTask,
-    createTask
+    createTask,
+    getTaskDetail
 }

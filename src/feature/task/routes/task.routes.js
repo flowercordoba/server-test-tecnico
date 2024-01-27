@@ -4,18 +4,21 @@ const {
  createTask,
  deleteTask,
  getTasks,
- updateTask
+ updateTask,
+ getTaskDetail
 } = require('../controllers/task.controllers');
-const FildValidation = require('../../../shared/middlewares/fieldValidation'); 
+// const FildValidation = require('../../../shared/middlewares/fieldValidation'); 
+const { validarJWT } = require('../../../shared/middlewares/Validation-jwt');
 
 const router = Router();
 
 // Ruta para obtener las tareas
-router.get('/', getTasks);
+router.get('/',validarJWT, getTasks);
+router.get('/detail/:id',validarJWT, getTaskDetail);
 
 // // Ruta para crear una tarea
 router.post(
-  '/',
+  '/create',validarJWT,
   [
     check('title', 'El título es obligatorio').not().isEmpty(),
     check('title', 'El título debe tener entre 2 y 256 caracteres').isLength({ min: 2, max: 256 }),
@@ -29,7 +32,7 @@ router.post(
 
 // // Ruta para actualizar una tarea
 router.put(
-  '/:id',
+  '/:id',validarJWT,
   [
     check('title', 'El título debe tener entre 2 y 256 caracteres').optional().isLength({ min: 2, max: 256 }),
     check('description', 'La descripción debe tener entre 2 y 1024 caracteres').optional().isLength({ min: 2, max: 1024 }),
@@ -42,7 +45,7 @@ router.put(
 
 // // Ruta para eliminar una tarea
 router.delete(
-  '/:id',
+  '/:id',validarJWT,
   [
     check('id', 'Se requiere un ID de tarea válido').isMongoId(),
     // FildValidation
