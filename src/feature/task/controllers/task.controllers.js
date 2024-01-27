@@ -1,6 +1,8 @@
 const { response } = require('express');
 
 const TaskModel = require('../model/task.model');
+const UserModel = require('../../user/models/usuario');
+const transporter = require('../../../shared/services/email.controller');
 
 
 const getTasks = async (req, res) => {
@@ -23,7 +25,7 @@ const getTasks = async (req, res) => {
   }
   
   const createTask = async(req, res = response) => {
-    const uid = req.uid; // Asegúrate de que uid se extraiga correctamente, por ejemplo, del JWT
+    const uid = req.uid;
     const task = new TaskModel({ 
         creator: uid,
         ...req.body 
@@ -32,9 +34,9 @@ const getTasks = async (req, res) => {
     try {
         const taskDB = await task.save();
         // Envía una notificación si se ha asignado a alguien
-        if (taskDB.assignedTo) {
-            sendTaskAssignedNotification(taskDB.assignedTo, taskDB.title);
-        }
+        // if (taskDB.assignedTo) {
+        //     sendTaskAssignedNotification(taskDB.assignedTo, taskDB.title);
+        // }
 
         res.json({
             ok: true,
@@ -85,9 +87,6 @@ const updateTask = async(req, res = response) => {
         });
     }
 };
-
-
-
 
 const deleteTask = async(req, res = response) => {
     const taskId = req.params.id;
