@@ -79,9 +79,35 @@ const deleteUser = async (req, res = response) => {
     });
   }
 };
+const getUserDetail = async (req, res = response) => {
+  const uid = req.uid; // UID extraído del token JWT
+
+  try {
+      const userDB = await userModel.findById(uid, "name email role google");
+
+      if (!userDB) {
+          return res.status(404).json({
+              ok: false,
+              msg: "No existe un usuario con ese ID",
+          });
+      }
+
+      res.json({
+          ok: true,
+          usuario: userDB
+      });
+  } catch (error) {
+      console.log(error);
+      res.status(500).json({
+          ok: false,
+          msg: "Error inesperado al obtener detalles del usuario",
+      });
+  }
+};
 
 module.exports = {
   getUsers,
   updateUser,
-  deleteUser
+  deleteUser,
+  getUserDetail
 };

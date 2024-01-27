@@ -5,14 +5,16 @@ const { Router } = require('express');
 const { check } = require('express-validator');
 const { FildValidation } = require('../../../shared/middlewares/fieldValidation');
 
-const {deleteUser,getUsers,updateUser } = require('../controllers/users.controller');
+const {deleteUser,getUsers,updateUser,getUserDetail } = require('../controllers/users.controller');
 const { validarJWT } = require('../../../shared/middlewares/Validation-jwt');
 
 
 const router = Router();
 
 
-router.get( '/', validarJWT , getUsers );
+router.get( '/all', validarJWT , getUsers );
+router.get('/me', validarJWT, getUserDetail);
+
 
 
 router.put( '/:id',

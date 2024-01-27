@@ -9,7 +9,7 @@ const {
 const router = Router();
 
 router.post(
-  "/",
+  "/login",validarJWT,
   [
     check("email", "El email es obligatorio").isEmail(),
     check("password", "El password es obligatorio").not().isEmpty(),
@@ -19,7 +19,7 @@ router.post(
 );
 
 router.post(
-  "/",
+  "/register",
   [
     check("name", "El nombre es obligatorio").not().isEmpty(),
     check("password", "El password es obligatorio").not().isEmpty(),

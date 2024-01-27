@@ -1,7 +1,7 @@
 const { response } = require("express");
 const bcrypt = require("bcryptjs");
 
-const userModel = require("../models/usuario");
+const userModel = require("../../user/models/usuario");
 const { generarJWT } = require("../../../shared/utils/jwt");
 
 const login = async (req, res = response) => {
