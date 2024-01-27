@@ -1,6 +1,4 @@
-/*
-    Ruta: /api/usuarios
-*/
+
 const { Router } = require('express');
 const { check } = require('express-validator');
 const { FildValidation } = require('../../../shared/middlewares/fieldValidation');

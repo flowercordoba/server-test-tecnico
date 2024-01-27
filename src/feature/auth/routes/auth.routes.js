@@ -1,10 +1,12 @@
 const { Router } = require("express");
-const { login } = require("../controllers/login.controller");
+const { login,renewToken } = require("../controllers/login.controller");
 const { register } = require("../controllers/register.controller");
 const { check } = require("express-validator");
+
 const {
   FildValidation,
 } = require("../../../shared/middlewares/fieldValidation");
+const { validarJWT } = require('../../../shared/middlewares/Validation-jwt');
 
 const router = Router();
 
@@ -17,6 +19,11 @@ router.post(
   ],
   login
 );
+router.get( '/renew',
+    validarJWT,
+    renewToken
+)
+
 
 router.post(
   "/register",
