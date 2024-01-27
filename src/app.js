@@ -23,6 +23,7 @@ dbConnection();
 app.use('/api/users', require('./feature/user/routes/user.routes'));
 app.use('/api/auth', require('./feature/auth/routes/auth.routes'));
 app.use('/api/task', require('./feature/task/routes/task.routes'));
+app.use('/api/todo', require('./feature/search/routes/search.routes'));
 
 app.listen(process.env.PORT, () => {
     console.log('Servidor corriendo en puerto ' + process.env.PORT);
