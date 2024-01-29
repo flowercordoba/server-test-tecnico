@@ -1,14 +1,36 @@
 const { response } = require("express");
 const userModel = require("../models/usuario");
 
-const getUsers = async (req, res) => {
-  const usuarios = await userModel.find({}, "name email role google");
+// const getUsers = async (req, res) => {
+//   const usuarios = await userModel.find({}, "name email role google");
+
+//   res.json({
+//     ok: true,
+//     usuarios,
+//   });
+// };
+
+const getUsers = async(req, res) => {
+
+  const desde = Number(req.query.desde) || 0;
+
+  const [ usuarios, total ] = await Promise.all([
+      userModel
+          .find({}, 'name email role google img')
+          .skip( desde )
+          .limit( 5 ),
+
+      userModel.countDocuments()
+  ]);
+
 
   res.json({
-    ok: true,
-    usuarios,
+      ok: true,
+      usuarios,
+      total
   });
-};
+
+}
 
 const updateUser = async (req, res = response) => {
   const uid = req.params.id;

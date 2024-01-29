@@ -176,6 +176,50 @@ const getTaskDetail = async (req, res) => {
 };
 
 
+const marcarTareaComoCompletada = async (req, res = response) => {
+    const taskId = req.params.id;
+
+    try {
+        // Buscar la tarea por ID
+        const tarea = await TaskModel.findById(taskId);
+
+        // Si la tarea no existe, enviamos un error 404.
+        if (!tarea) {
+            return res.status(404).json({
+                ok: false,
+                message: 'Tarea no encontrada'
+            });
+        }
+
+        // Si la tarea ya está completada, indicar que ya se completó anteriormente.
+        if (tarea.complete) {
+            return res.status(400).json({
+                ok: false,
+                message: 'La tarea ya fue marcada como completada'
+            });
+        }
+
+        // Marcar como completada y guardar la fecha de finalización
+        tarea.complete = true;
+        tarea.completedAt = new Date();
+
+        // Guardar la tarea actualizada
+        await tarea.save();
+
+        res.status(200).json({
+            ok: true,
+            tarea
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            message: 'Error al actualizar la tarea'
+        });
+    }
+}
+
 
 
 
@@ -186,5 +230,6 @@ module.exports = {
     deleteTask,
     updateTask,
     createTask,
-    getTaskDetail
+    getTaskDetail,
+    marcarTareaComoCompletada
 }
